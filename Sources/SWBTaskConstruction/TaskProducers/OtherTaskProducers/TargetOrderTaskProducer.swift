@@ -352,7 +352,9 @@ final class TargetOrderTaskProducer: StandardTaskProducer, TaskProducer {
             }
         }
 
-        return (inputs, dependencies)
+        // Sort the inputs to ensure deterministic ordering in the build description, since the dependency graph may yield them in non-deterministic order.
+        let sortedInputs = inputs.sorted { (a: any PlannedNode, b: any PlannedNode) -> Bool in a.name < b.name }
+        return (sortedInputs, dependencies)
     }
 
     private var configuredTarget: ConfiguredTarget {
